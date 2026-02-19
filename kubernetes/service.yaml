@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cats-dogs-service
+spec:
+  selector:
+    app: cats-dogs
+  ports:
+    - protocol: TCP
+      port: 80             # external port
+      targetPort: 8000     # container port
+  type: LoadBalancer       # Minikube will give external IP

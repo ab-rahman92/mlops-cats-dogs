@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cats-dogs-deployment
+  labels:
+    app: cats-dogs
+spec:
+  replicas: 1                        # Start with 1 pod
+  selector:
+    matchLabels:
+      app: cats-dogs
+  template:
+    metadata:
+      labels:
+        app: cats-dogs
+    spec:
+      containers:
+      - name: inference
+        image: 9052337279/cats-dogs-api:latest   # ← replace with your actual Docker Hub repo
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
