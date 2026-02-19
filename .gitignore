@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.env
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Data (large files)
+data/raw/
+*.zip
+*.rar
+
+# MLflow & temp
+mlruns/
+*.log
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
