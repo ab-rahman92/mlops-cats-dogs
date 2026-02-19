@@ -12,8 +12,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code + saved model
 COPY src/ ./src/
-# Copy models folder only if it exists (prevents CI failure)
-COPY --chmod=644 models/ ./models/  || true
 
 # Expose the port FastAPI will run on
 EXPOSE 8000
