@@ -1,0 +1,14 @@
+# Ignore large/unneeded files in Docker context
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+mlruns/
+data/raw/
+data/processed/     # we version this with DVC, not in image
+models/*.h5         # optional: if you have many checkpoints
+*.log
+.git/
+.github/
