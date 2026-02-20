@@ -5,7 +5,7 @@ metadata:
   labels:
     app: cats-dogs
 spec:
-  replicas: 1
+  replicas: 1                        # Start with 1 pod
   selector:
     matchLabels:
       app: cats-dogs
@@ -15,32 +15,20 @@ spec:
         app: cats-dogs
     spec:
       containers:
-      - name: inference-container
-        image: cats-dogs-api:local-with-model
-        imagePullPolicy: Never   # Helps with local Minikube + cached images
-
+      - name: inference
+        image: 9052337279/cats-dogs-api:latest   # ← replace with your actual Docker Hub repo
         ports:
         - containerPort: 8000
-
         resources:
-          requests:
-            cpu: "300m"
-            memory: "512Mi"
           limits:
-            cpu: "800m"
-            memory: "1Gi"
-
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
         readinessProbe:
           httpGet:
             path: /health
             port: 8000
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          failureThreshold: 3
-
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 20
+          initialDelaySeconds: 10
+          periodSeconds: 5
