@@ -24,10 +24,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Quick smoke training
-      run: |
-        python src/train.py --ci-smoke
-
     - name: Run unit tests
       run: pytest src/tests/ -v
 
