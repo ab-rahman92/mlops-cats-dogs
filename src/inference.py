@@ -2,7 +2,7 @@ import os
 import numpy as np
 from PIL import Image
 import io
-import dvc.api
+import subprocess
 import logging
 import tensorflow as tf
 
@@ -22,8 +22,13 @@ def load_model():
     if not os.path.exists(MODEL_PATH):
         logger.info("Model not found locally → pulling from DVC (Backblaze B2)")
         try:
-            dvc.api.get("models/baseline_model.keras", out=MODEL_PATH)
-            logger.info("Model successfully pulled from B2")
+            result = subprocess.run(
+                ["dvc", "pull", "models/baseline_model.keras"],
+                check=True,
+                capture_output=True,
+                text=True
+            )
+            logger.info("Model successfully pulled from B2: " + result.stdout)
         except Exception as e:
             logger.error(f"Failed to pull model: {str(e)}")
             raise RuntimeError("Model unavailable - service in health-only mode")
