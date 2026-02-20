@@ -28,6 +28,17 @@ jobs:
     - name: Run unit tests
       run: pytest src/tests/ -v
 
+    - name: Install DVC & configure Backblaze B2
+      run: |
+        pip install "dvc[s3]"
+        dvc remote add -d b2-remote s3://your-bucket-name
+        dvc remote modify b2-remote endpointurl https://s3.us-west-000.backblazeb2.com
+        dvc remote modify --local b2-remote access_key_id ${{ secrets.B2_KEY_ID }}
+        dvc remote modify --local b2-remote secret_access_key ${{ secrets.B2_APPLICATION_KEY }}
+
+    - name: Pull model artifact from B2
+      run: dvc pull models/baseline_model.keras
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 

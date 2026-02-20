@@ -36,39 +36,38 @@ app.add_middleware(
 request_counter = Counter()
 latency_histogram = []  # list of latencies
 
-@app.get("/health", tags=["health"])
-async def health_check():
-    mdl = load_model()
-    status = "healthy" if mdl is not None else "healthy (no model loaded)"
-    logger.info("Health check called")
-    return {"status": status, "request_count": request_counter["predict"]}
+request_count = 0
+latency_sum = 0.0
+latency_count = 0
 
-@app.post("/predict", tags=["prediction"])
+@app.get("/health")
+async def health():
+    mdl = load_model()
+    status = "healthy" if mdl is not None else "healthy (model not loaded)"
+    return {
+        "status": status,
+        "request_count": request_count,
+        "avg_latency_ms": round(latency_sum / latency_count * 1000, 2) if latency_count > 0 else 0
+    }
+
+@app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    start_time = time.time()
-    request_counter["predict"] += 1
-    
+    global request_count, latency_sum, latency_count
+    start = time.time()
+    request_count += 1
+
     try:
-        if not file.content_type.startswith("image/"):
-            raise HTTPException(400, "File must be an image")
-        
         contents = await file.read()
         result = predict_image(contents)
-        
-        latency = time.time() - start_time
-        latency_histogram.append(latency)
-        
-        logger.info(
-            f"Prediction success | class: {result['predicted_class']} | "
-            f"conf: {result['confidence']} | latency: {latency:.3f}s | "
-            f"total requests: {request_counter['predict']}"
-        )
-        
+        latency = time.time() - start
+        latency_sum += latency
+        latency_count += 1
+
+        logger.info(f"Prediction | class: {result['predicted_class']} | latency: {latency:.3f}s")
         return result
-    
+
     except Exception as e:
-        latency = time.time() - start_time
-        logger.error(f"Prediction failed: {str(e)} | latency: {latency:.3f}s")
+        logger.error(f"Prediction error: {str(e)}")
         raise HTTPException(500, str(e))
 
 @app.get("/metrics", tags=["monitoring"])

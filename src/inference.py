@@ -2,6 +2,8 @@ import os
 import numpy as np
 from PIL import Image
 import io
+import dvc.api
+import logging
 import tensorflow as tf
 
 # load the model from the local path (later change to MLflow artifact)
@@ -10,16 +12,29 @@ MODEL_PATH = "models/baseline_model.keras"
 # Global model (loaded once at startup - good for FastAPI)
 model = None
 
+logger = logging.getLogger(__name__)
+
 def load_model():
     global model
-    if model is None:
-        if not os.path.exists(MODEL_PATH):
-            print(f"Warning: Model not found at {MODEL_PATH}. Using dummy mode for health check.")
-            # In real production you'd raise or fallback
-            # For CI: return a fake model or skip prediction
-            return None  # or raise only in production
+    if model is not None:
+        return model
+
+    if not os.path.exists(MODEL_PATH):
+        logger.info("Model not found locally → pulling from DVC (Backblaze B2)")
+        try:
+            dvc.api.get("models/baseline_model.keras", out=MODEL_PATH)
+            logger.info("Model successfully pulled from B2")
+        except Exception as e:
+            logger.error(f"Failed to pull model: {str(e)}")
+            raise RuntimeError("Model unavailable - service in health-only mode")
+
+    try:
         model = tf.keras.models.load_model(MODEL_PATH)
-        print("Model loaded successfully")
+        logger.info("Model loaded successfully")
+    except Exception as e:
+        logger.error(f"Model loading failed: {str(e)}")
+        model = None
+
     return model
 
 def predict_image(image_bytes: bytes):
