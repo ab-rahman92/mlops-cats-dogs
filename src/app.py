@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="MLOPS Cats vs Dogs Inference API",
+    title="MLOPS XYZ Cats vs Dogs Inference API",
     description="Simple binary image classification API",
     version="0.1.0"
 )
