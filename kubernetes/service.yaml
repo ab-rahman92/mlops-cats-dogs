@@ -9,4 +9,4 @@ spec:
     - protocol: TCP
       port: 80             # external port
       targetPort: 8000     # container port
-  type: LoadBalancer       # Minikube will give external IP
+      nodePort: 30080       # Minikube will give external IP
