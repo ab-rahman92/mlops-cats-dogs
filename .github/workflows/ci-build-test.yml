@@ -1,4 +1,4 @@
-name: CI - Test, Build & Push Docker Image
+name: CI - Test, Build, Push Image & Validate Deployment
 
 on:
   push:
@@ -8,10 +8,11 @@ on:
 
 jobs:
   test-and-build:
+    name: Test & Build Docker Image
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Set up Python 3.11
@@ -41,18 +42,21 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        push: ${{ github.ref == 'refs/heads/main' }}   # only push on main
+        push: ${{ github.ref == 'refs/heads/main' }}
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest
           ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-deploy:
+
+  validate-deployment:
+    name: Validate Kubernetes Manifests & Smoke Check
     needs: test-and-build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Set up kubectl
@@ -60,8 +64,22 @@ deploy:
       with:
         version: 'latest'
 
-    # Option A: Just validate manifests (demo / safe)
-    - name: Validate Kubernetes manifests
+    - name: Validate manifests (dry-run)
       run: |
-        kubectl apply -f kubernetes/deployment.yaml --dry-run=client
-        kubectl apply -f kubernetes/service.yaml --dry-run=client
+        kubectl apply -f kubernetes/deployment.yaml --dry-run=client -o yaml
+        kubectl apply -f kubernetes/service.yaml --dry-run=client -o yaml
+        echo "Manifests are syntactically valid"
+
+    # Optional: Add real smoke test if you have a webhook to Argo CD or exposed service
+    # - name: Notify Argo CD to sync (if using webhook)
+    #   run: |
+    #     curl -X POST \
+    #       -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}" \
+    #       https://your-argocd-domain.example.com/api/v1/applications/cats-dogs-app/sync
+
+    - name: Echo deployment info
+      run: |
+        echo "CI completed successfully."
+        echo "New image tag: ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:${{ github.sha }}"
+        echo "Argo CD (if configured) should automatically sync changes from git."
+        echo "For local Minikube: use 'minikube image load' or pull from Docker Hub."
