@@ -5,7 +5,7 @@ metadata:
   labels:
     app: cats-dogs
 spec:
-  replicas: 1                        # Start with 1 pod
+  replicas: 1
   selector:
     matchLabels:
       app: cats-dogs
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: inference
-        image: 9052337279/cats-dogs-api:latest   # ← replace with your actual Docker Hub repo
+        image: 9052337279/cats-dogs-api:latest
         ports:
         - containerPort: 8000
         resources:
@@ -25,7 +25,7 @@ spec:
             memory: "1024Mi"
           requests:
             cpu: "200m"
-            memory: "1024Mi"
+            memory: "512Mi"
         readinessProbe:
           httpGet:
             path: /health

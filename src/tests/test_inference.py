@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import patch
 from src.inference import predict_image, load_model
 
-MODEL_PATH = "models/baseline_model.keras"  # or use os.getenv("MODEL_PATH", ...)
+MODEL_PATH = "models/baseline_model.keras"
 
 @pytest.fixture
 def dummy_cat_image_bytes():

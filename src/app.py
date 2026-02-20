@@ -4,7 +4,6 @@ from src.inference import predict_image, load_model
 import logging
 import time
 from collections import Counter
-import json
 
 # Setup logging
 logging.basicConfig(
@@ -18,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Cats vs Dogs Inference API",
+    title="MLOPS Binary Classification Inference API",
     description="Binary image classification for pet adoption",
     version="0.1.0"
 )

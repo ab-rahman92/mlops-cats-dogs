@@ -2,14 +2,13 @@ import os
 import numpy as np
 from PIL import Image
 import io
-import subprocess
 import logging
 import tensorflow as tf
 
-# load the model from the local path (later change to MLflow artifact)
+# load the model from the local path
 MODEL_PATH = "models/baseline_model.keras"
 
-# Global model (loaded once at startup - good for FastAPI)
+# Global model
 model = None
 
 logger = logging.getLogger(__name__)
@@ -18,20 +17,6 @@ def load_model():
     global model
     if model is not None:
         return model
-
-    if not os.path.exists(MODEL_PATH):
-        logger.info("Model not found locally → pulling from DVC (Backblaze B2)")
-        try:
-            result = subprocess.run(
-                ["dvc", "pull", "models/baseline_model.keras"],
-                check=True,
-                capture_output=True,
-                text=True
-            )
-            logger.info("Model successfully pulled from B2: " + result.stdout)
-        except Exception as e:
-            logger.error(f"Failed to pull model: {str(e)}")
-            raise RuntimeError("Model unavailable - service in health-only mode")
 
     try:
         model = tf.keras.models.load_model(MODEL_PATH)

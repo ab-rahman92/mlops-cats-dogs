@@ -37,7 +37,7 @@ def test_preprocess_creates_correct_structure(setup_test_data):
         raw_root=TEST_RAW_DIR,
         processed_root=TEST_PROCESSED_DIR,
         img_size=(32, 32),  # small for test speed
-        train_ratio=0.6,          # ← smaller train
+        train_ratio=0.6,    # ← smaller train
         val_ratio=0.2
     )
     

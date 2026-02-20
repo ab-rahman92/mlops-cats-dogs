@@ -1,7 +1,7 @@
-# Use official Python slim image (smaller than full python:3.11)
+# official Python slim image (smaller than full python:3.11)
 FROM python:3.11-slim
 
-# Set working directory inside container
+# working directory inside container
 WORKDIR /app
 
 # Copy only requirements first → better caching for rebuilds

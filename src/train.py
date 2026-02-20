@@ -5,21 +5,19 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import mlflow
 import mlflow.keras
 import matplotlib.pyplot as plt
-import numpy as np
 
 # ────────────────────────────────────────────────
-# Configuration - easy to change / log
+# Configuration
 # ────────────────────────────────────────────────
 
 IMG_SIZE = (224, 224)
-BATCH_SIZE = 2
-EPOCHS = 64               # small for quick experiments; increase later
+BATCH_SIZE = 64
+EPOCHS = 2              # small for quick experiments; increase later
 LEARNING_RATE = 0.001
 AUGMENTATION = True
 
 DATA_DIR = "data/processed"
 
-# ────────────────────────────────────────────────
 def create_simple_cnn(input_shape=(224, 224, 3)):
     model = models.Sequential([
         layers.Input(shape=input_shape),
@@ -47,7 +45,6 @@ def create_simple_cnn(input_shape=(224, 224, 3)):
     
     return model
 
-# ────────────────────────────────────────────────
 def get_data_generators():
     train_datagen = ImageDataGenerator(
         rescale=1./255,
@@ -90,7 +87,6 @@ def get_data_generators():
     
     return train_gen, val_gen, test_gen
 
-# ────────────────────────────────────────────────
 def plot_history(history, save_path="training_history.png"):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -109,9 +105,7 @@ def plot_history(history, save_path="training_history.png"):
     plt.close()
     return save_path
 
-# ────────────────────────────────────────────────
 def main():
-    # ── MLflow setup ─────────────────────────────────
     mlflow.set_experiment("cats-vs-dogs-baseline")
     
     with mlflow.start_run(run_name="simple-cnn-run-1"):
