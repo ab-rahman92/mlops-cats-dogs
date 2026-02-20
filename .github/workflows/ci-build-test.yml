@@ -47,3 +47,21 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+deploy:
+    needs: test-and-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v4
+      with:
+        version: 'latest'
+
+    # Option A: Just validate manifests (demo / safe)
+    - name: Validate Kubernetes manifests
+      run: |
+        kubectl apply -f kubernetes/deployment.yaml --dry-run=client
+        kubectl apply -f kubernetes/service.yaml --dry-run=client
