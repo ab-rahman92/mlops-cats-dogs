@@ -83,6 +83,8 @@ minikube service cats-dogs-service --url
 
 # M5: Monitoring & Logs
 
-**Run post-deployment test**
-python post_deploy_test.py
-Save output to submission/smoke_test_results.txt
+**Smoke Test (Post‑Deployment)**
+python smoke_test.py
+
+**Model Performance Tracking (Post‑Deployment)**
+python post_deployment_test.py

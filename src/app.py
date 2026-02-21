@@ -78,7 +78,7 @@ async def get_metrics():
         avg_latency = sum(latency_histogram) / len(latency_histogram)
     
     return {
-        "total_requests": request_counter["predict"],
-        "avg_latency_seconds": round(avg_latency, 3),
+        "total_requests": request_count,
+        "avg_latency_seconds": round(latency_sum / latency_count if latency_count > 0 else 0, 3),
         "log_file": "inference.log (contains detailed request logs)"
     }

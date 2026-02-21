@@ -1,7 +1,0 @@
-[core]
-    remote = b2-remote
-['remote "b2-remote"']
-    url = s3://mlops-cats-dogs-model
-    endpointurl = https://s3.us-east-005.backblazeb2.com
-    access_key_id = 005b375067c84490000000002
-    secret_access_key = K0054KECsuraskSZTSEejpRIj+kftEk
