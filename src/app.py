@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="MLOPS Binary Classification Inference API",
-    description="Binary image classification for pet adoption",
+    description="Binary image classification for pet adoption cats vs dogs",
     version="0.1.0"
 )
 
