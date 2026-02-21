@@ -28,6 +28,9 @@ def load_model():
     except Exception as e:
         logger.error(f"Model loading failed: {str(e)}")
         model = None
+    finally:
+        model = tf.keras.models.load_model(MODEL_PATH)
+        logger.info("Model loaded successfully")
 
     return model
 

@@ -1,5 +1,0 @@
-outs:
-- md5: 424dbaebf6a665a43b00b630157a5264
-  size: 266986680
-  hash: md5
-  path: baseline_model.keras
