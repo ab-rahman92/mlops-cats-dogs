@@ -15,6 +15,9 @@ spec:
       containers:
       - name: mlflow
         image: ghcr.io/mlflow/mlflow:v3.9.0
+        env:
+        - name: MLFLOW_SERVER_ALLOWED_HOSTS
+          value: "*"
         command: ["mlflow"]
         args:
           [
