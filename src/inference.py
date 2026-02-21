@@ -4,9 +4,13 @@ from PIL import Image
 import io
 import logging
 import tensorflow as tf
+import mlflow
+import mlflow.pyfunc
 
 # load the model from the local path
 MODEL_PATH = "models/baseline_model.keras"
+
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 
 # Global model
 model = None
@@ -19,8 +23,8 @@ def load_model():
         return model
 
     try:
-        model = tf.keras.models.load_model(MODEL_PATH)
-        logger.info("Model loaded successfully")
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        model = mlflow.pyfunc.load_model("models:/cats-vs-dogs-baseline/1")
     except Exception as e:
         logger.error(f"Model loading failed: {str(e)}")
         model = None
@@ -38,7 +42,7 @@ def predict_image(image_bytes: bytes):
     img_array = np.expand_dims(img_array, axis=0)  # shape: (1, 224, 224, 3)
     
     # Predict
-    pred = mdl.predict(img_array, verbose=0)[0][0]
+    pred = mdl.predict(img_array)[0][0]
     
     # Binary classification
     label = "dog" if pred > 0.5 else "cat"

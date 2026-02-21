@@ -19,6 +19,9 @@ spec:
         image: 9052337279/cats-dogs-api:latest
         ports:
         - containerPort: 8000
+        env:
+        - name: MLFLOW_TRACKING_URI
+          value: "http://host.docker.internal:5000"
         resources:
           limits:
             cpu: "500m"

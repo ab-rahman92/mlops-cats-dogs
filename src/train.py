@@ -153,7 +153,7 @@ def main():
         
         # Save model (Keras format + MLflow format)
         model.save("models/baseline_model.keras")
-        mlflow.keras.log_model(model, "model")
+        mlflow.keras.log_model(model, artifact_path="model", registered_model_name="cats-vs-dogs-baseline")
         
         print("Training finished. Model and artifacts logged to MLflow.")
 

@@ -3,7 +3,7 @@ import glob
 import time
 import os
 
-SERVICE_URL = "http://127.0.0.1:51492"  # replace with your minikube service --url
+SERVICE_URL = "http://127.0.0.1:52878/"  # replace with your minikube service --url
 
 test_images = glob.glob("data/processed/test/cat/*.jpg")[:5] + \
               glob.glob("data/processed/test/dog/*.jpg")[:5]
