@@ -17,6 +17,7 @@ LEARNING_RATE = 0.001
 AUGMENTATION = True
 
 DATA_DIR = "data/processed"
+mlflow.set_tracking_uri("http://localhost:5000")
 
 def create_simple_cnn(input_shape=(224, 224, 3)):
     model = models.Sequential([
