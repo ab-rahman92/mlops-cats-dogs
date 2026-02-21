@@ -21,7 +21,7 @@ spec:
         - containerPort: 8000
         env:
         - name: MLFLOW_TRACKING_URI
-          value: "http://host.docker.internal:5000"
+          value: "http://mlflow-service:5000"
         resources:
           limits:
             cpu: "500m"

@@ -68,4 +68,6 @@ jobs:
       run: |
         kubectl apply -f kubernetes/deployment.yaml --dry-run=client --validate=false -o yaml || true
         kubectl apply -f kubernetes/service.yaml --dry-run=client --validate=false -o yaml || true
+        kubectl apply -f kubernetes/mlflow-deployment.yaml --dry-run=client --validate=false -o yaml || true
+        kubectl apply -f kubernetes/mlflow-service.yaml --dry-run=client --validate=false -o yaml || true
         echo "Kubernetes manifests are valid (API connection intentionally skipped)"
