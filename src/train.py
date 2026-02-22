@@ -1,10 +1,13 @@
 import os
+import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import mlflow
 import mlflow.keras
 import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
 # ────────────────────────────────────────────────
 # Configuration
@@ -105,6 +108,22 @@ def plot_history(history, save_path="training_history.png"):
     plt.close()
     return save_path
 
+def plot_confusion_matrix(y_true, y_pred, save_path="confusion_matrix.png"):
+    """Plot and save confusion matrix"""
+    cm = confusion_matrix(y_true, y_pred)
+    
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=['Cat', 'Dog'], 
+                yticklabels=['Cat', 'Dog'])
+    plt.title('Confusion Matrix - Test Set')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.close()
+    return save_path
+
 def main():
     mlflow.set_experiment("cats-vs-dogs-baseline")
     
@@ -139,6 +158,11 @@ def main():
         test_loss, test_acc = model.evaluate(test_gen, verbose=0)
         print(f"\nTest accuracy: {test_acc:.4f} | Test loss: {test_loss:.4f}")
         
+        # Generate predictions for confusion matrix
+        y_pred_probs = model.predict(test_gen)
+        y_pred = (y_pred_probs > 0.5).astype(int).flatten()
+        y_true = test_gen.classes
+        
         # Log final metrics
         mlflow.log_metrics({
             "train_acc_final": history.history['accuracy'][-1],
@@ -150,6 +174,10 @@ def main():
         # Log learning curves plot
         plot_path = plot_history(history)
         mlflow.log_artifact(plot_path, "plots/training_curves.png")
+        
+        # Log confusion matrix
+        cm_path = plot_confusion_matrix(y_true, y_pred)
+        mlflow.log_artifact(cm_path, "plots/confusion_matrix.png")
         
         # Save model (Keras format + MLflow format)
         model.save("models/baseline_model.keras")

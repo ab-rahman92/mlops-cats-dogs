@@ -31,7 +31,9 @@ git commit -m "Track processed data"
 python src/train.py
 
 View MLflow UI
-mlflow uiOpen http://127.0.0.1:5000
+mlflow server --host 0.0.0.0 --port 5000 --disable-security-middleware
+
+Open http://127.0.0.1:5000
 
 # M2: Model Packaging & Containerization
 
@@ -72,8 +74,8 @@ Username: admin
 Password: kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 
 **Create Argo CD Application (in UI):**
-New App → General: Name = cats-dogs, Project = default
-Source: Repo URL = your GitHub repo, Path = kubernetes, Revision = main
+New App → General: Name = mlops-cats-dogs, Project = default
+Source: Repo URL = GitHub repo link, Path = kubernetes/, Revision = main
 Destination: Cluster URL = https://kubernetes.default.svc, Namespace = default
 Sync Policy: Automatic + Prune + Self Heal
 Save & Sync
@@ -82,9 +84,6 @@ Save & Sync
 minikube service cats-dogs-service --url
 
 # M5: Monitoring & Logs
-
-**Smoke Test (Post‑Deployment)**
-python smoke_test.py
 
 **Model Performance Tracking (Post‑Deployment)**
 python post_deployment_test.py
